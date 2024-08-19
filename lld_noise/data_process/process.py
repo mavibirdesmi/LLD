@@ -75,7 +75,8 @@ def raw2bayer(raw, wp=1023, bl=64, norm=True, clip=False, bias=np.array([0,0,0,0
         bl = bias + bl
         bl = bl.reshape(4, 1, 1) 
         out = (out - bl) / (wp - bl)
-    if clip: out = np.clip(out, 0, 1)
+    if clip:
+        out = np.clip(out, 0, 1)
     return out.astype(np.float32) 
 
 def bayer2raw(packed_raw, wp=16383, bl=512):
@@ -273,7 +274,7 @@ def raw2rgb_rawpy(packed_raw, wb=None, ccm=None):
     if ccm is None:
         try:
             ccm = raw.rgb_camera_matrix[:3, :3]
-        except:
+        except Exception:
             warnings.warn("You have no Wei Kaixuan's customized rawpy, you can't get right ccm of SonyA7S2...")
             ccm = raw.color_matrix[:3, :3]
     elif np.max(np.abs(ccm - np.identity(3))) == 0:
@@ -309,7 +310,7 @@ def get_specific_noise_params(camera_type=None, iso='100'):
     if camera_type in cam_noisy_params:
         return cam_noisy_params[camera_type][iso]
     else:
-        log(f'''Warning: we have not test the noisy parameters of camera "{camera_type}". Now we use NikonD850's parameters to test.''')
+        print(f'''Warning: we have not test the noisy parameters of camera "{camera_type}". Now we use NikonD850's parameters to test.''')
         return cam_noisy_params['IMX686']
 
 def get_camera_noisy_params(camera_type=None):
@@ -351,7 +352,7 @@ def get_camera_noisy_params(camera_type=None):
     if camera_type in cam_noisy_params:
         return cam_noisy_params[camera_type]
     else:
-        log(f'''Warning: we have not test the noisy parameters of camera "{camera_type}". Now we use NikonD850's parameters to test.''')
+        print(f'''Warning: we have not test the noisy parameters of camera "{camera_type}". Now we use NikonD850's parameters to test.''')
         return cam_noisy_params['NikonD850']
 
 def get_camera_noisy_params_max(camera_type=None):
@@ -788,7 +789,8 @@ class HighBitRecovery:
     
     def map(self, data, iso=6400, norm=True):    # 将LB图像映射成HB图像
         p = self.lut[iso]['param']
-        if np.max(data) <= 1: data = data * (p['wp'] - p['bl'])
+        if np.max(data) <= 1:
+            data = data * (p['wp'] - p['bl'])
         data_float = data.copy()
         data = np.round(data_float)
         if self.float:
