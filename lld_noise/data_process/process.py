@@ -14,6 +14,9 @@ from scipy import stats
 from utils import *
 import random
 from .unprocess import random_gains
+import cv2
+import os
+import warnings
 
 Dual_ISO_Cameras = ['SonyA7S2']
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -859,6 +862,7 @@ class ELDEvalDataset(torch.utils.data.Dataset):
         return len(self.scenes) * len(self.img_ids)
 
 if __name__ == '__main__':
+    import matplotlib.pyplot as plt
     path = 'F:/datasets/ELD/SonyA7S2/scene-8'
     files = [os.path.join(path, name) for name in os.listdir(path) if '.ARW' in name]
     for name in files:
